@@ -88,7 +88,7 @@ python main.py
 
 ## 作者信息
 
-作者：xx
+作者：cc-Infiltration
 
 ## 注意事项
 
