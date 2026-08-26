@@ -18,6 +18,368 @@ backup_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backup')
 if not os.path.exists(backup_dir):
     os.makedirs(backup_dir)
 
+# ===== Midnight Mist 柔和主题样式表 =====
+STYLESHEET = """
+* {
+    font-family: "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+    font-size: 13px;
+    outline: none;
+}
+
+QWidget {
+    background-color: #1C1E22;
+    color: #D8DCE3;
+}
+
+QMainWindow, QDialog {
+    background-color: #1C1E22;
+}
+
+/* —— 顶部标题区 —— */
+QLabel#HeaderTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #E4E7EC;
+    letter-spacing: 0.5px;
+}
+QLabel#HeaderSubtitle {
+    color: #8A909A;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+}
+QLabel#permBadge {
+    color: #8A909A;
+    border: 1px solid #3A3E45;
+    border-radius: 11px;
+    padding: 3px 14px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* —— 标签页 —— */
+QTabWidget::pane {
+    border: 1px solid #2E3238;
+    border-radius: 8px;
+    background: #1C1E22;
+    top: -1px;
+}
+QTabBar {
+    background: transparent;
+}
+QTabBar::tab {
+    background: transparent;
+    color: #7A808A;
+    padding: 9px 22px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-right: 2px;
+    font-weight: 500;
+}
+QTabBar::tab:hover { color: #B4B9C2; }
+QTabBar::tab:selected {
+    color: #8FA8B0;
+    border-bottom: 2px solid #6A8490;
+}
+
+/* —— 列表控件 —— */
+QListWidget {
+    background-color: #222529;
+    alternate-background-color: #25292E;
+    border: 1px solid #2E3238;
+    border-radius: 8px;
+    padding: 4px;
+    font-family: "Cascadia Mono", "Consolas", "Cascadia Code", monospace;
+    font-size: 12px;
+}
+QListWidget::item {
+    padding: 9px 10px;
+    border-bottom: 1px solid #272B31;
+    border-radius: 4px;
+    color: #C0C6CF;
+}
+QListWidget::item:hover { background-color: #262A30; }
+QListWidget::item:selected {
+    background-color: #2E3A44;
+    border-left: 3px solid #7B9BA6;
+    color: #C8D4DB;
+}
+
+/* —— 树控件 —— */
+QTreeWidget {
+    background-color: #222529;
+    border: 1px solid #2E3238;
+    border-radius: 8px;
+    padding: 4px;
+    alternate-background-color: #25292E;
+}
+QTreeWidget::item {
+    padding: 6px 4px;
+    border-bottom: 1px solid #272B31;
+}
+QTreeWidget::item:hover { background-color: #262A30; }
+QTreeWidget::item:selected {
+    background-color: #2E3A44;
+    border-left: 3px solid #7B9BA6;
+}
+QHeaderView::section {
+    background-color: #1C1E22;
+    color: #7A808A;
+    padding: 7px 8px;
+    border: none;
+    border-bottom: 1px solid #2E3238;
+    border-right: 1px solid #25292E;
+    font-weight: 600;
+    font-size: 11px;
+}
+QTreeView::indicator, QCheckBox::indicator {
+    width: 14px; height: 14px;
+}
+
+/* —— 单行输入框 —— */
+QLineEdit {
+    background-color: #222529;
+    border: 1px solid #2E3238;
+    border-radius: 7px;
+    padding: 8px 12px;
+    color: #D8DCE3;
+    selection-background-color: #4A5A68;
+    selection-color: #E4E7EC;
+}
+QLineEdit:focus { border: 1px solid #6A8490; }
+QLineEdit::placeholder { color: #7A808A; }
+
+/* —— 按钮 —— */
+QPushButton {
+    background-color: #2A2D32;
+    color: #B4B9C2;
+    border: 1px solid #363A40;
+    border-radius: 7px;
+    padding: 8px 16px;
+    font-weight: 500;
+}
+QPushButton:hover {
+    background-color: #33373E;
+    border-color: #5A6B78;
+    color: #D8DCE3;
+}
+QPushButton:pressed { background-color: #23262B; }
+QPushButton:disabled {
+    color: #555B63;
+    background-color: #1E2126;
+    border-color: #282C32;
+}
+QPushButton#addButton, QPushButton#newBackupButton {
+    background-color: #6A8490;
+    color: #1C1E22;
+    border: 1px solid #6A8490;
+    font-weight: 600;
+}
+QPushButton#addButton:hover, QPushButton#newBackupButton:hover {
+    background-color: #7B9BA6;
+    border-color: #7B9BA6;
+}
+QPushButton#deleteButton, QPushButton#deleteBackupButton {
+    color: #966565;
+    border-color: #3E3030;
+}
+QPushButton#deleteButton:hover, QPushButton#deleteBackupButton:hover {
+    background-color: #2A2224;
+    border-color: #7A5050;
+    color: #A87878;
+}
+QDialogButtonBox QPushButton { min-width: 84px; }
+
+/* —— 对话框按钮组 —— */
+QDialogButtonBox {
+    background-color: transparent;
+    spacing: 8px;
+}
+QDialogButtonBox QPushButton {
+    background-color: #2A2D32;
+    color: #B4B9C2;
+    border: 1px solid #363A40;
+    border-radius: 7px;
+    padding: 8px 20px;
+    font-weight: 500;
+    min-width: 90px;
+}
+QDialogButtonBox QPushButton:hover {
+    background-color: #33373E;
+    border-color: #5A6B78;
+    color: #D8DCE3;
+}
+QDialogButtonBox QPushButton:pressed { background-color: #23262B; }
+
+/* —— 表单与标签 —— */
+QLabel {
+    background-color: transparent;
+    color: #C0C6CF;
+}
+QFormLayout {
+    background-color: transparent;
+}
+QGroupBox {
+    background-color: transparent;
+    border: 1px solid #2E3238;
+    border-radius: 8px;
+    margin-top: 16px;
+    padding-top: 12px;
+    color: #C0C6CF;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 12px;
+    padding: 0 6px;
+    color: #8FA8B0;
+}
+QCheckBox {
+    background-color: transparent;
+    color: #C0C6CF;
+    spacing: 8px;
+}
+QCheckBox::indicator {
+    width: 16px; height: 16px;
+    border: 1px solid #363A40;
+    border-radius: 4px;
+    background-color: #222529;
+}
+QCheckBox::indicator:checked {
+    background-color: #6A8490;
+    border-color: #6A8490;
+    image: none;
+}
+QCheckBox::indicator:hover { border-color: #5A6B78; }
+
+/* —— 下拉框与数值框 —— */
+QComboBox {
+    background-color: #222529;
+    border: 1px solid #2E3238;
+    border-radius: 7px;
+    padding: 6px 10px;
+    color: #D8DCE3;
+}
+QComboBox:hover { border-color: #5A6B78; }
+QComboBox::drop-down {
+    border: none;
+    width: 20px;
+}
+QComboBox QAbstractItemView {
+    background-color: #222529;
+    color: #D8DCE3;
+    border: 1px solid #2E3238;
+    selection-background-color: #2E3A44;
+    selection-color: #C8D4DB;
+}
+QSpinBox, QDoubleSpinBox {
+    background-color: #222529;
+    border: 1px solid #2E3238;
+    border-radius: 7px;
+    padding: 6px 10px;
+    color: #D8DCE3;
+}
+QSpinBox:hover, QDoubleSpinBox:hover { border-color: #5A6B78; }
+QSpinBox::up-button, QDoubleSpinBox::up-button,
+QSpinBox::down-button, QDoubleSpinBox::down-button {
+    background-color: #2A2D32;
+    border: none;
+    width: 16px;
+}
+QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover,
+QSpinBox::down-button:hover, QDoubleSpinBox::down-button:hover {
+    background-color: #33373E;
+}
+
+/* —— 进度条 —— */
+QProgressBar {
+    background-color: #222529;
+    border: 1px solid #2E3238;
+    border-radius: 6px;
+    text-align: center;
+    color: #C0C6CF;
+}
+QProgressBar::chunk {
+    background-color: #6A8490;
+    border-radius: 5px;
+}
+
+/* —— 滚动区与容器 —— */
+QScrollArea {
+    background-color: transparent;
+    border: none;
+}
+QScrollArea > QWidget > QWidget {
+    background-color: transparent;
+}
+QFrame {
+    background-color: transparent;
+    border: none;
+}
+QTabWidget::tab-bar {
+    background: transparent;
+}
+QStatusBar QLabel {
+    background-color: transparent;
+    color: #7A808A;
+}
+
+/* —— 滚动条 —— */
+QScrollBar:vertical { background: transparent; width: 10px; margin: 0; }
+QScrollBar::handle:vertical {
+    background: #363A40; border-radius: 5px; min-height: 30px;
+}
+QScrollBar::handle:vertical:hover { background: #5A6B78; }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: transparent; }
+QScrollBar:horizontal { background: transparent; height: 10px; margin: 0; }
+QScrollBar::handle:horizontal {
+    background: #363A40; border-radius: 5px; min-width: 30px;
+}
+QScrollBar::handle:horizontal:hover { background: #5A6B78; }
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0; }
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal { background: transparent; }
+
+/* —— 分割器 —— */
+QSplitter::handle { background: #2E3238; }
+QSplitter::handle:vertical { height: 2px; }
+QSplitter::handle:horizontal { width: 2px; }
+
+/* —— 右键菜单 —— */
+QMenu {
+    background-color: #222529;
+    border: 1px solid #363A40;
+    border-radius: 8px;
+    padding: 6px;
+}
+QMenu::item {
+    padding: 7px 26px;
+    border-radius: 5px;
+    color: #C0C6CF;
+}
+QMenu::item:selected { background-color: #2E3A44; color: #C8D4DB; }
+QMenu::separator { height: 1px; background: #2E3238; margin: 4px 8px; }
+
+/* —— 消息框 —— */
+QMessageBox { background-color: #222529; }
+QMessageBox QLabel { color: #D8DCE3; }
+QInputDialog { background-color: #1C1E22; }
+QInputDialog QLabel { color: #D8DCE3; }
+
+/* —— 状态栏 —— */
+QStatusBar {
+    background-color: #1C1E22;
+    color: #7A808A;
+    border-top: 1px solid #2E3238;
+    font-size: 11px;
+}
+QStatusBar::item { border: none; }
+QToolTip {
+    background-color: #222529;
+    color: #D8DCE3;
+    border: 1px solid #363A40;
+    padding: 4px 8px;
+}
+"""
+
 class RegistryHandler:
     """注册表操作处理类"""
     def __init__(self):
@@ -411,33 +773,45 @@ class BackupManagerDialog(QDialog):
         
         # 创建布局
         layout = QVBoxLayout(self)
-        
+        layout.setContentsMargins(18, 18, 18, 18)
+        layout.setSpacing(12)
+
         # 顶部按钮
         button_layout = QHBoxLayout()
+        button_layout.setSpacing(8)
         self.refresh_button = QPushButton("刷新")
         self.new_backup_button = QPushButton("新建备份")
+        self.new_backup_button.setObjectName("newBackupButton")
         self.restore_button = QPushButton("恢复")
         self.delete_button = QPushButton("删除")
-        
-        button_layout.addWidget(self.refresh_button)
+        self.delete_button.setObjectName("deleteBackupButton")
+
         button_layout.addWidget(self.new_backup_button)
+        button_layout.addWidget(self.refresh_button)
         button_layout.addWidget(self.restore_button)
+        button_layout.addSpacing(10)
         button_layout.addWidget(self.delete_button)
         button_layout.addStretch()
-        
+
         layout.addLayout(button_layout)
-        
+
         # 分割器
         splitter = QSplitter(Qt.Vertical)
-        
+
         # 备份列表
         self.backup_tree = QTreeWidget()
         self.backup_tree.setHeaderLabels(["文件名", "时间", "描述", "系统变量数", "用户变量数"])
         self.backup_tree.setSelectionMode(QTreeWidget.SingleSelection)
-        
+        self.backup_tree.setAlternatingRowColors(True)
+        self.backup_tree.setRootIsDecorated(False)
+        self.backup_tree.setUniformRowHeights(True)
+
         # 备份详情
         self.detail_tree = QTreeWidget()
         self.detail_tree.setHeaderLabels(["变量类型", "变量名", "值"])
+        self.detail_tree.setAlternatingRowColors(True)
+        self.detail_tree.setRootIsDecorated(False)
+        self.detail_tree.setUniformRowHeights(True)
         
         splitter.addWidget(self.backup_tree)
         splitter.addWidget(self.detail_tree)
@@ -630,9 +1004,13 @@ class PathEditorDialog(QDialog):
         
         # 布局
         layout = QVBoxLayout(self)
-        
+        layout.setContentsMargins(18, 18, 18, 18)
+        layout.setSpacing(12)
+
         # 路径列表
         self.path_list = QListWidget()
+        self.path_list.setAlternatingRowColors(True)
+        self.path_list.setUniformItemSizes(True)
         layout.addWidget(self.path_list)
         
         # 操作按钮
@@ -685,9 +1063,9 @@ class PathEditorDialog(QDialog):
                     # 验证路径有效性
                     expanded_path = os.path.expandvars(path.strip())
                     if os.path.exists(expanded_path):
-                        item.setForeground(QColor("green"))
+                        item.setForeground(QColor("#7BA07B"))
                     else:
-                        item.setForeground(QColor("red"))
+                        item.setForeground(QColor("#966565"))
                     
                     self.path_list.addItem(item)
     
@@ -700,9 +1078,9 @@ class PathEditorDialog(QDialog):
             # 验证路径有效性
             expanded_path = os.path.expandvars(path.strip())
             if os.path.exists(expanded_path):
-                item.setForeground(QColor("green"))
+                item.setForeground(QColor("#7BA07B"))
             else:
-                item.setForeground(QColor("red"))
+                item.setForeground(QColor("#966565"))
             
             self.path_list.addItem(item)
             self.update_buttons()
@@ -719,9 +1097,9 @@ class PathEditorDialog(QDialog):
                 # 验证路径有效性
                 expanded_path = os.path.expandvars(new_path.strip())
                 if os.path.exists(expanded_path):
-                    current_item.setForeground(QColor("green"))
+                    current_item.setForeground(QColor("#7BA07B"))
                 else:
-                    current_item.setForeground(QColor("red"))
+                    current_item.setForeground(QColor("#966565"))
     
     def delete_path(self):
         """删除路径"""
@@ -771,12 +1149,12 @@ class PathEditorDialog(QDialog):
                 # 验证路径有效性
                 expanded_path = os.path.expandvars(folder_path)
                 if os.path.exists(expanded_path):
-                    current_item.setForeground(QColor("green"))
+                    current_item.setForeground(QColor("#7BA07B"))
                 else:
-                    current_item.setForeground(QColor("red"))
+                    current_item.setForeground(QColor("#966565"))
             else:
                 item = QListWidgetItem(folder_path)
-                item.setForeground(QColor("green"))
+                item.setForeground(QColor("#7BA07B"))
                 self.path_list.addItem(item)
                 self.update_buttons()
     
@@ -822,7 +1200,34 @@ class MainWindow(QMainWindow):
         
         # 主布局
         self.main_layout = QVBoxLayout(self.central_widget)
-        
+        self.main_layout.setContentsMargins(18, 14, 18, 14)
+        self.main_layout.setSpacing(10)
+
+        # 顶部标题区
+        header_widget = QWidget()
+        header_widget.setObjectName("headerWidget")
+        header_layout = QHBoxLayout(header_widget)
+        header_layout.setContentsMargins(2, 0, 2, 0)
+        header_layout.setSpacing(12)
+
+        title_block = QVBoxLayout()
+        title_block.setSpacing(2)
+        self.title_label = QLabel("环境变量管理  ·  ENV MANAGER")
+        self.title_label.setObjectName("HeaderTitle")
+        self.subtitle_label = QLabel("管理用户与系统环境变量  /  多路径可视化编辑  /  操作自动备份")
+        self.subtitle_label.setObjectName("HeaderSubtitle")
+        title_block.addWidget(self.title_label)
+        title_block.addWidget(self.subtitle_label)
+        header_layout.addLayout(title_block)
+        header_layout.addStretch()
+
+        # 权限状态徽标
+        self.perm_badge = QLabel("权限检测中")
+        self.perm_badge.setObjectName("permBadge")
+        header_layout.addWidget(self.perm_badge)
+
+        self.main_layout.addWidget(header_widget)
+
         # 标签切换区
         self.tab_widget = QTabWidget()
         self.user_tab = QWidget()
@@ -833,53 +1238,67 @@ class MainWindow(QMainWindow):
         
         # 用户变量界面
         self.user_layout = QVBoxLayout(self.user_tab)
-        
+        self.user_layout.setContentsMargins(4, 6, 4, 4)
+        self.user_layout.setSpacing(8)
+
         # 用户变量搜索框
         self.user_search_layout = QHBoxLayout()
-        self.user_search_label = QLabel("搜索:")
+        self.user_search_layout.setSpacing(8)
+        self.user_search_label = QLabel("搜索")
+        self.user_search_label.setObjectName("HeaderSubtitle")
         self.user_search_input = QLineEdit()
         self.user_search_input.setPlaceholderText("输入变量名或值进行搜索...")
         self.user_search_input.textChanged.connect(self.load_variables)
-        
+
         self.user_search_layout.addWidget(self.user_search_label)
         self.user_search_layout.addWidget(self.user_search_input)
-        
+
         self.user_list_widget = VariableListWidget(self)
         self.user_layout.addLayout(self.user_search_layout)
         self.user_layout.addWidget(self.user_list_widget)
-        
+
         # 系统变量界面
         self.system_layout = QVBoxLayout(self.system_tab)
-        
+        self.system_layout.setContentsMargins(4, 6, 4, 4)
+        self.system_layout.setSpacing(8)
+
         # 系统变量搜索框
         self.system_search_layout = QHBoxLayout()
-        self.system_search_label = QLabel("搜索:")
+        self.system_search_layout.setSpacing(8)
+        self.system_search_label = QLabel("搜索")
+        self.system_search_label.setObjectName("HeaderSubtitle")
         self.system_search_input = QLineEdit()
         self.system_search_input.setPlaceholderText("输入变量名或值进行搜索...")
         self.system_search_input.textChanged.connect(self.load_variables)
-        
+
         self.system_search_layout.addWidget(self.system_search_label)
         self.system_search_layout.addWidget(self.system_search_input)
-        
+
         self.system_list_widget = VariableListWidget(self)
         self.system_layout.addLayout(self.system_search_layout)
         self.system_layout.addWidget(self.system_list_widget)
-        
+
         # 功能按钮区
         self.button_layout = QHBoxLayout()
+        self.button_layout.setContentsMargins(2, 0, 2, 0)
+        self.button_layout.setSpacing(8)
         self.add_button = QPushButton("添加变量")
+        self.add_button.setObjectName("addButton")
         self.edit_button = QPushButton("编辑变量")
         self.delete_button = QPushButton("删除变量")
+        self.delete_button.setObjectName("deleteButton")
         self.validate_button = QPushButton("批量验证")
         self.sort_button = QPushButton("一键整理")
         self.backup_button = QPushButton("备份管理")
-        
+
         self.button_layout.addWidget(self.add_button)
         self.button_layout.addWidget(self.edit_button)
         self.button_layout.addWidget(self.delete_button)
+        self.button_layout.addSpacing(14)
         self.button_layout.addWidget(self.validate_button)
         self.button_layout.addWidget(self.sort_button)
         self.button_layout.addWidget(self.backup_button)
+        self.button_layout.addStretch()
         
         # 添加到主布局
         self.main_layout.addWidget(self.tab_widget)
@@ -921,8 +1340,9 @@ class MainWindow(QMainWindow):
         if variables is None:
             # 没有系统变量权限
             item = QListWidgetItem("没有权限访问系统变量，请以管理员身份运行程序")
-            item.setForeground(QColor("red"))
+            item.setForeground(QColor("#966565"))
             list_widget.addItem(item)
+            self.statusBar().showMessage("无权限访问系统变量")
             return
         
         # 获取搜索关键词
@@ -949,18 +1369,38 @@ class MainWindow(QMainWindow):
             
             # 设置无效变量样式
             if not is_valid:
-                item.setForeground(QColor("red"))
+                item.setForeground(QColor("#966565"))
             
             # 存储变量名和值
             item.setData(Qt.UserRole, (name, value))
             
             list_widget.addItem(item)
+
+        # 状态栏统计
+        scope = "用户" if self.current_var_type == "user" else "系统"
+        total = len(variables)
+        shown = len(sorted_vars)
+        if search_keyword:
+            self.statusBar().showMessage(f"{scope}作用域  ·  显示 {shown} / {total} 个变量")
+        else:
+            self.statusBar().showMessage(f"{scope}作用域  ·  共 {total} 个变量")
     
     def check_system_permission(self):
         """检查系统变量权限"""
         system_vars = self.env_manager.get_variables("system")
         if system_vars is None:
+            self.perm_badge.setText("普通用户")
+            self.perm_badge.setStyleSheet(
+                "QLabel#permBadge { color:#9AA0AA; border:1px solid #4A4E55; "
+                "border-radius:11px; padding:3px 14px; font-size:11px; font-weight:600; }"
+            )
             QMessageBox.warning(self, "权限提示", "您没有管理员权限，无法修改系统变量。")
+        else:
+            self.perm_badge.setText("管理员")
+            self.perm_badge.setStyleSheet(
+                "QLabel#permBadge { color:#7BA07B; border:1px solid #4A5A4A; "
+                "border-radius:11px; padding:3px 14px; font-size:11px; font-weight:600; }"
+            )
     
     def show_add_variable_dialog(self):
         """显示添加变量对话框"""
@@ -990,15 +1430,18 @@ class MainWindow(QMainWindow):
             if dialog.exec_():
                 value = dialog.get_path_string()
                 
-                # 验证变量
-                is_valid, message = self.env_manager.validate_variable(name, value)
-                if not is_valid:
-                    QMessageBox.warning(self, "验证失败", message)
+                # 非路径相关的基础校验（空值等）
+                if not name.strip() or not value.strip():
+                    QMessageBox.warning(self, "验证失败", "变量名和值不能为空")
                     return
                     
-                # 添加变量
+                # 添加变量（不再弹窗阻止路径不存在，由列表标红提示）
                 if self.env_manager.add_variable(self.current_var_type, name, value):
-                    QMessageBox.information(self, "成功", "变量添加成功")
+                    is_valid, message = self.env_manager.validate_variable(name, value)
+                    if not is_valid:
+                        self.statusBar().showMessage(f"变量已保存，但部分路径无效: {message}")
+                    else:
+                        QMessageBox.information(self, "成功", "变量添加成功")
                     self.load_variables()
                 else:
                     QMessageBox.warning(self, "失败", "添加变量失败，请检查权限")
@@ -1023,15 +1466,18 @@ class MainWindow(QMainWindow):
                     if edit_dialog.exec_():
                         value = edit_dialog.get_path_string()
                 
-                # 验证变量
-                is_valid, message = self.env_manager.validate_variable(name, value)
-                if not is_valid:
-                    QMessageBox.warning(self, "验证失败", message)
+                # 非路径相关的基础校验（空值等）
+                if not name.strip() or not value.strip():
+                    QMessageBox.warning(self, "验证失败", "变量名和值不能为空")
                     return
                     
-                # 添加变量
+                # 添加变量（不再弹窗阻止路径不存在，由列表标红提示）
                 if self.env_manager.add_variable(self.current_var_type, name, value):
-                    QMessageBox.information(self, "成功", "变量添加成功")
+                    is_valid, message = self.env_manager.validate_variable(name, value)
+                    if not is_valid:
+                        self.statusBar().showMessage(f"变量已保存，但路径无效: {message}")
+                    else:
+                        QMessageBox.information(self, "成功", "变量添加成功")
                     self.load_variables()
                 else:
                     QMessageBox.warning(self, "失败", "添加变量失败，请检查权限")
@@ -1069,15 +1515,18 @@ class MainWindow(QMainWindow):
                 new_value = dialog.get_path_string()
                 new_name = name  # 多路径变量名不能更改
                 
-                # 验证变量
-                is_valid, message = self.env_manager.validate_variable(new_name, new_value)
-                if not is_valid:
-                    QMessageBox.warning(self, "验证失败", message)
+                # 非路径相关的基础校验（空值等）
+                if not new_name.strip() or not new_value.strip():
+                    QMessageBox.warning(self, "验证失败", "变量名和值不能为空")
                     return
                 
-                # 更新变量
+                # 更新变量（不再弹窗阻止路径不存在，由列表标红提示）
                 if self.env_manager.update_variable(self.current_var_type, name, new_name, new_value):
-                    QMessageBox.information(self, "成功", "变量更新成功")
+                    is_valid, message = self.env_manager.validate_variable(new_name, new_value)
+                    if not is_valid:
+                        self.statusBar().showMessage(f"变量已更新，但部分路径无效: {message}")
+                    else:
+                        QMessageBox.information(self, "成功", "变量更新成功")
                     self.load_variables()
                 else:
                     QMessageBox.warning(self, "失败", "更新变量失败，请检查权限")
@@ -1087,10 +1536,9 @@ class MainWindow(QMainWindow):
             if dialog.exec_():
                 new_name, new_value = dialog.get_data()
                 
-                # 验证变量
-                is_valid, message = self.env_manager.validate_variable(new_name, new_value)
-                if not is_valid:
-                    QMessageBox.warning(self, "验证失败", message)
+                # 非路径相关的基础校验（空值等）
+                if not new_name.strip() or not new_value.strip():
+                    QMessageBox.warning(self, "验证失败", "变量名和值不能为空")
                     return
                 
                 # 检查变量名是否已存在（排除当前变量）
@@ -1099,9 +1547,13 @@ class MainWindow(QMainWindow):
                     QMessageBox.warning(self, "错误", "变量名已存在")
                     return
                 
-                # 更新变量
+                # 更新变量（不再弹窗阻止路径不存在，由列表标红提示）
                 if self.env_manager.update_variable(self.current_var_type, name, new_name, new_value):
-                    QMessageBox.information(self, "成功", "变量更新成功")
+                    is_valid, message = self.env_manager.validate_variable(new_name, new_value)
+                    if not is_valid:
+                        self.statusBar().showMessage(f"变量已更新，但路径无效: {message}")
+                    else:
+                        QMessageBox.information(self, "成功", "变量更新成功")
                     self.load_variables()
                 else:
                     QMessageBox.warning(self, "失败", "更新变量失败，请检查权限")
@@ -1180,6 +1632,11 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyleSheet(STYLESHEET)
+    # 全局字体
+    font = QFont("Microsoft YaHei UI", 9)
+    app.setFont(font)
     window = MainWindow()
+    window.resize(980, 700)
     window.show()
     sys.exit(app.exec_())
