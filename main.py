@@ -9,10 +9,10 @@ from PyQt5.QtWidgets import (
     QListWidgetItem, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QLineEdit, QFileDialog, QMessageBox, QMenu, QInputDialog, QDialog,
     QFormLayout, QDialogButtonBox, QTreeWidget, QTreeWidgetItem,
-    QSplitter, QCheckBox
+    QSplitter, QCheckBox, QStyledItemDelegate
 )
 from PyQt5.QtCore import Qt, QUrl, QMimeData
-from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QFont, QColor
+from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QFont, QColor, QPalette
 
 # 创建backup目录
 backup_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backup')
@@ -123,13 +123,12 @@ QListWidget::item {
     padding: 9px 10px;
     border-bottom: 1px solid #272B31;
     border-radius: 4px;
-    color: #C0C6CF;
+    /* 不在此处设置 color，否则会覆盖代码中 setForeground 的标红/标绿 */
 }
 QListWidget::item:hover { background-color: #262A30; }
 QListWidget::item:selected {
     background-color: #2E3A44;
     border-left: 3px solid #7B9BA6;
-    color: #C8D4DB;
 }
 
 /* —— 树控件 —— */
@@ -727,6 +726,16 @@ class EnvironmentVariableManager:
                 invalid_vars.append((name, message))
         return invalid_vars
 
+class ColoredItemDelegate(QStyledItemDelegate):
+    """列表项委托：文字颜色始终使用 item 前景色（选中/未选中都保持标红/标灰）"""
+    def initStyleOption(self, option, index):
+        super().initStyleOption(option, index)
+        value = index.data(Qt.ForegroundRole)
+        if value is not None and value.style() != Qt.NoBrush:
+            option.palette.setBrush(QPalette.Text, value)
+            option.palette.setBrush(QPalette.HighlightedText, value)
+            option.palette.setBrush(QPalette.WindowText, value)
+
 class VariableListWidget(QListWidget):
     """变量列表控件，支持拖拽和右键菜单"""
     def __init__(self, parent=None):
@@ -735,6 +744,7 @@ class VariableListWidget(QListWidget):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_context_menu)
         self.parent = parent
+        self.setItemDelegate(ColoredItemDelegate(self))
         
     def dragEnterEvent(self, event: QDragEnterEvent):
         """拖拽进入事件"""
@@ -1044,6 +1054,7 @@ class PathEditorDialog(QDialog):
         self.path_list = QListWidget()
         self.path_list.setAlternatingRowColors(True)
         self.path_list.setUniformItemSizes(True)
+        self.path_list.setItemDelegate(ColoredItemDelegate(self))
         layout.addWidget(self.path_list)
         
         # 操作按钮
@@ -1396,9 +1407,11 @@ class MainWindow(QMainWindow):
             item_text = f"{name} = {value}"
             item = QListWidgetItem(item_text)
             
-            # 设置无效变量样式
+            # 设置变量样式：有效变量用默认文字色，无效变量标红
             if not is_valid:
                 item.setForeground(QColor("#966565"))
+            else:
+                item.setForeground(QColor("#C0C6CF"))
             
             # 存储变量名和值
             item.setData(Qt.UserRole, (name, value))
