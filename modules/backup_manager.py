@@ -48,21 +48,32 @@ class BackupManager:
         backups = []
         try:
             for filename in os.listdir(self.backup_dir):
-                if filename.endswith('.json'):
-                    filepath = os.path.join(self.backup_dir, filename)
+                if not filename.endswith('.json'):
+                    continue
+                filepath = os.path.join(self.backup_dir, filename)
+                try:
                     with open(filepath, 'r', encoding='utf-8') as f:
                         data = json.load(f)
-                    backups.append({
-                        "filename": filename,
-                        "path": filepath,
-                        "timestamp": data.get("timestamp", ""),
-                        "description": data.get("description", ""),
-                        "system_count": len(data.get("system_variables", {})),
-                        "user_count": len(data.get("user_variables", {}))
-                    })
+                except Exception as e:
+                    # 跳过损坏或无法解析的备份文件，避免影响整个列表
+                    print(f"跳过损坏的备份文件 {filename}: {e}")
+                    continue
+                backups.append({
+                    "filename": filename,
+                    "path": filepath,
+                    "timestamp": data.get("timestamp", ""),
+                    "description": data.get("description", ""),
+                    "system_count": len(data.get("system_variables", {})),
+                    "user_count": len(data.get("user_variables", {}))
+                })
             
-            # 按时间倒序排序
-            backups.sort(key=lambda x: datetime.strptime(x["timestamp"], "%Y-%m-%d %H:%M:%S"), reverse=True)
+            # 按时间倒序排序（时间缺失或无法解析的备份排到最后）
+            def parse_time(item):
+                try:
+                    return datetime.strptime(item["timestamp"], "%Y-%m-%d %H:%M:%S")
+                except (ValueError, TypeError):
+                    return datetime.min
+            backups.sort(key=parse_time, reverse=True)
             return backups
         except Exception as e:
             print(f"获取备份列表失败: {e}")

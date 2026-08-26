@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import winreg
+import threading
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QTabWidget, QListWidget,
@@ -17,6 +18,33 @@ from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QFont, QColor
 backup_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backup')
 if not os.path.exists(backup_dir):
     os.makedirs(backup_dir)
+
+def path_exists_with_timeout(path, timeout=2.0):
+    """带超时的路径存在性检查，防止不可达的网络路径长时间卡死界面"""
+    result = [False]
+    def _check():
+        try:
+            result[0] = os.path.exists(path)
+        except Exception:
+            result[0] = False
+    t = threading.Thread(target=_check, daemon=True)
+    t.start()
+    t.join(timeout)
+    return result[0]
+
+def is_valid_path(path):
+    """检查路径是否有效（用于标红判断）"""
+    path = path.strip()
+    if not path:
+        return False
+    # 仅盘符如 "C:" 不是有效路径，但 os.path.exists("C:") 在 Windows 下会返回 True
+    if len(path) == 2 and path[1] == ':':
+        return False
+    expanded = os.path.expandvars(path)
+    # 网络路径(UNC)的存在性检查可能因地址不可达而长时间阻塞，加超时保护
+    if expanded.startswith('\\\\'):
+        return path_exists_with_timeout(expanded)
+    return os.path.exists(expanded)
 
 # ===== Midnight Mist 柔和主题样式表 =====
 STYLESHEET = """
@@ -511,21 +539,32 @@ class BackupManager:
             from datetime import datetime
             
             for filename in os.listdir(self.backup_dir):
-                if filename.endswith('.json'):
-                    filepath = os.path.join(self.backup_dir, filename)
+                if not filename.endswith('.json'):
+                    continue
+                filepath = os.path.join(self.backup_dir, filename)
+                try:
                     with open(filepath, 'r', encoding='utf-8') as f:
                         data = json.load(f)
-                    backups.append({
-                        "filename": filename,
-                        "path": filepath,
-                        "timestamp": data.get("timestamp", ""),
-                        "description": data.get("description", ""),
-                        "system_count": len(data.get("system_variables", {})),
-                        "user_count": len(data.get("user_variables", {}))
-                    })
+                except Exception as e:
+                    # 跳过损坏或无法解析的备份文件，避免影响整个列表
+                    print(f"跳过损坏的备份文件 {filename}: {e}")
+                    continue
+                backups.append({
+                    "filename": filename,
+                    "path": filepath,
+                    "timestamp": data.get("timestamp", ""),
+                    "description": data.get("description", ""),
+                    "system_count": len(data.get("system_variables", {})),
+                    "user_count": len(data.get("user_variables", {}))
+                })
             
-            # 按时间倒序排序
-            backups.sort(key=lambda x: datetime.strptime(x["timestamp"], "%Y-%m-%d %H:%M:%S"), reverse=True)
+            # 按时间倒序排序（时间缺失或无法解析的备份排到最后）
+            def parse_time(item):
+                try:
+                    return datetime.strptime(item["timestamp"], "%Y-%m-%d %H:%M:%S")
+                except (ValueError, TypeError):
+                    return datetime.min
+            backups.sort(key=parse_time, reverse=True)
             return backups
         except Exception as e:
             print(f"获取备份列表失败: {e}")
@@ -667,19 +706,13 @@ class EnvironmentVariableManager:
                 invalid_paths = []
                 for path in paths:
                     path = path.strip()
-                    if path:
-                        # 展开环境变量引用
-                        expanded_path = os.path.expandvars(path)
-                        if expanded_path != path and not os.path.exists(expanded_path):
-                            invalid_paths.append(path)
-                        elif expanded_path == path and not os.path.exists(path):
-                            invalid_paths.append(path)
+                    if path and not is_valid_path(path):
+                        invalid_paths.append(path)
                 if invalid_paths:
                     return False, f"以下路径不存在: {', '.join(invalid_paths)}"
             else:
                 # 普通路径变量检查
-                expanded_value = os.path.expandvars(value.strip())
-                if not os.path.exists(expanded_value):
+                if not is_valid_path(value):
                     return False, "路径不存在"
         
         return True, ""
@@ -1061,8 +1094,7 @@ class PathEditorDialog(QDialog):
                     item = QListWidgetItem(path.strip())
                     
                     # 验证路径有效性
-                    expanded_path = os.path.expandvars(path.strip())
-                    if os.path.exists(expanded_path):
+                    if is_valid_path(path.strip()):
                         item.setForeground(QColor("#7BA07B"))
                     else:
                         item.setForeground(QColor("#966565"))
@@ -1076,8 +1108,7 @@ class PathEditorDialog(QDialog):
             item = QListWidgetItem(path.strip())
             
             # 验证路径有效性
-            expanded_path = os.path.expandvars(path.strip())
-            if os.path.exists(expanded_path):
+            if is_valid_path(path.strip()):
                 item.setForeground(QColor("#7BA07B"))
             else:
                 item.setForeground(QColor("#966565"))
@@ -1095,8 +1126,7 @@ class PathEditorDialog(QDialog):
                 current_item.setText(new_path.strip())
                 
                 # 验证路径有效性
-                expanded_path = os.path.expandvars(new_path.strip())
-                if os.path.exists(expanded_path):
+                if is_valid_path(new_path.strip()):
                     current_item.setForeground(QColor("#7BA07B"))
                 else:
                     current_item.setForeground(QColor("#966565"))
@@ -1147,8 +1177,7 @@ class PathEditorDialog(QDialog):
                 current_item.setText(folder_path)
                 
                 # 验证路径有效性
-                expanded_path = os.path.expandvars(folder_path)
-                if os.path.exists(expanded_path):
+                if is_valid_path(folder_path):
                     current_item.setForeground(QColor("#7BA07B"))
                 else:
                     current_item.setForeground(QColor("#966565"))
