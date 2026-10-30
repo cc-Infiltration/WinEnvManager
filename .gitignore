@@ -1,49 +1,20 @@
-# Python
+﻿# Python
 __pycache__/
-backup/
 *.py[cod]
-*$py.class
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual environments
+.venv/
 venv/
-env/
-ENV/
 
-# IDE
-.idea/
+# 运行数据
+backups/
+*.log
+
+# IDE / 工具
+.trae/
 .vscode/
-*.swp
-*.swo
+.idea/
+.claude/
 
-# OS
-.DS_Store
+# 系统文件
 Thumbs.db
-desktop.ini
-
-# Test artifacts
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-
-# Type checker
-.mypy_cache/
+Desktop.ini
